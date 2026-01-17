@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>احتساب الخدمة – العتبة الحسينية المقدسة</title>
+    <!-- خط القاهرة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Cairo", "Tahoma", Arial, sans-serif;
+            background: #eef1f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #0b3c63;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* الهيدر */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0b3c63;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .header img {
+            height: 80px;
+        }
+
+        .left-title {
+            text-align: left;
+            font-weight: 900;
+            color: #0b3c63;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .left-title span {
+            color: #b88a13;
+            font-weight: 700;
+        }
+
+        /* عنوان الصفحة */
+        .main-title {
+            text-align: center;
+            margin: 15px 0 25px 0;
+            color: #0b3c63;
+        }
+
+        .main-title h2 {
+            margin: 0;
+            font-size: 24px;
+            text-decoration: underline;
+            text-decoration-color: #b88a13;
+        }
+
+        .section {
+            border: 1px solid #dcdcdc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fcfcfc;
+            position: relative;
+        }
+
+        .section-title {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: white;
+            padding: 0 10px;
+            color: #0b3c63;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+            box-sizing: border-box;
+            /* مهم جداً لضبط العرض */
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #b88a13;
+            outline: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            font-size: 18px;
+            font-family: "Cairo", sans-serif;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .calc {
+            background: #0b3c63;
+            color: white;
+        }
+
+        .calc:hover {
+            background: #092a46;
+        }
+
+        .print {
+            background: #b88a13;
+            color: white;
+        }
+
+        .print:hover {
+            background: #946f0f;
+        }
+
+        .result-box {
+            border: 2px dashed #0b3c63;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            background: #f0f7ff;
+            color: #0b3c63;
+            display: none;
+            /* مخفي افتراضياً */
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .note {
+            color: #d9534f;
+            text-align: center;
+            font-size: 13px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 5mm 10mm;
+                /* تقليل الهوامش لضمان احتواء المحتوى */
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0;
+                margin: 0;
+            }
+
+            .btn-group,
+            button,
+            .note {
+                display: none !important;
+            }
+
+            .result-box {
+                break-inside: avoid;
+                border: 2px solid #000;
+                page-break-inside: avoid;
+            }
+
+            input {
+                border: none;
+                border-bottom: 1px solid #000;
+                padding: 0;
+                background: transparent;
+            }
+
+            /* تصحيح للمتصفحات لضمان عدم قص الجهة اليسرى في العربية */
+            html,
+            body {
+                overflow-x: hidden;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <!-- يمكنك تغيير الصورة هنا -->
+            <img src="11.png" alt="شعار العتبة" onerror="this.style.display='none'">
+            <div class="left-title">
+                الأمانة العامة للعتبة الحسينية المقدسة<br>
+                <span>شعبة الشؤون التقاعدية</span>
+            </div>
+        </div>
+
+        <div class="main-title">
+            <h2>احتساب الخدمة</h2>
+        </div>
+
+        <div class="section">
+            <span class="section-title">تواريخ الخدمة</span>
+            <div class="row">
+                <div class="form-group">
+                    <label>تاريخ المباشرة</label>
+                    <input type="date" id="start">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الاحتساب (النهاية)</label>
+                    <input type="date" id="end">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <span class="section-title">الخدمة المضمونة (إضافة)</span>
+            <div class="row">
+                <div class="form-group"><input type="number" id="gYears" placeholder="سنة" min="0"></div>
+                <div class="form-group"><input type="number" id="gMonths" placeholder="شهر" min="0"></div>
+                <div class="form-group"><input type="number" id="gDays" placeholder="يوم" min="0"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <span class="section-title">الخدمة العسكرية (إضافة)</span>
+            <div class="row">
+                <div class="form-group"><input type="number" id="mYears" placeholder="سنة" min="0"></div>
+                <div class="form-group"><input type="number" id="mMonths" placeholder="شهر" min="0"></div>
+                <div class="form-group"><input type="number" id="mDays" placeholder="يوم" min="0"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <span class="section-title">المتغيرات والغيابات (خصم)</span>
+            <div class="row">
+                <div class="form-group"><input type="number" id="vYears" placeholder="سنة" min="0"></div>
+                <div class="form-group"><input type="number" id="vMonths" placeholder="شهر" min="0"></div>
+                <div class="form-group"><input type="number" id="vDays" placeholder="يوم" min="0"></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="calc" onclick="calc()">احتساب الخدمة</button>
+            <button class="print" onclick="window.print()">🖨️ طباعة التقرير</button>
+        </div>
+
+        <div id="resultsArea">
+            <div class="result-box" id="actual"></div>
+            <div class="result-box" id="total"></div>
+        </div>
+
+        <p class="note">
+            * هذا البرنامج للأغراض الإدارية والتنظيمية فقط.
+        </p>
+
+        <div class="footer">
+            - جميع الحقوق محفوظة – العتبة الحسينية المقدسة © <span id="curYear"></span><br>
+            شعبة الشؤون التقاعدية - م. علي غريب
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('curYear').innerText = new Date().getFullYear();
+
+        // دالة مساعدة لجلب القيمة الرقمية من الحقل
+        function getVal(id) {
+            const val = document.getElementById(id).value;
+            return val ? parseInt(val) : 0;
+        }
+
+        // دالة لدعم التواريخ بشكل صحيح عبر المتصفحات
+        function parseDate(input) {
+            if (!input) return null;
+            let parts = input.split("-");
+            // ملاحظة: الشهر في JS يبدأ من 0
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
+        function calc() {
+            const startInput = document.getElementById('start').value;
+            const endInput = document.getElementById('end').value;
+            const actualBox = document.getElementById('actual');
+            const totalBox = document.getElementById('total');
+
+            if (!startInput || !endInput) {
+                alert("يرجى إدخال تاريخ المباشرة وتاريخ الاحتساب");
+                return;
+            }
+
+            let s = parseDate(startInput);
+            let e = parseDate(endInput);
+
+            if (e < s) {
+                alert("تاريخ الاحتساب لا يمكن أن يكون قبل تاريخ المباشرة!");
+                return;
+            }
+
+            // --- 1. حساب الخدمة الفعلية (تقويم ميلادي دقيق) ---
+            let y = e.getFullYear() - s.getFullYear();
+            let m = e.getMonth() - s.getMonth();
+            let d = e.getDate() - s.getDate();
+
+            // استلاف الأيام والشهور
+            if (d < 0) {
+                m--;
+                // الحصول على عدد أيام الشهر السابق للشهر الحالي في تاريخ النهاية
+                // (مثلاً لو النهاية 5 مارس، نعود لأيام فبراير)
+                let daysInPrevMonth = new Date(e.getFullYear(), e.getMonth(), 0).getDate();
+                d += daysInPrevMonth;
+            }
+            if (m < 0) {
+                y--;
+                m += 12;
+            }
+
+            actualBox.innerHTML = `الخدمة الفعلية (من ${startInput} إلى ${endInput}):<br>
+                               <span style="color:#b88a13; font-size:1.2em">${y}</span> سنة 
+                               و <span style="color:#b88a13; font-size:1.2em">${m}</span> شهر 
+                               و <span style="color:#b88a13; font-size:1.2em">${d}</span> يوم`;
+            actualBox.classList.add('show');
+
+            // --- 2. حساب الإضافات والخصومات ---
+            // نجمع السنوات والشهور والأيام المدخلة
+            let addedYears = getVal("gYears") + getVal("mYears");
+            let addedMonths = getVal("gMonths") + getVal("mMonths");
+            let addedDays = getVal("gDays") + getVal("mDays");
+
+            let subYears = getVal("vYears");
+            let subMonths = getVal("vMonths");
+            let subDays = getVal("vDays");
+
+            // الناتج الأولي
+            let TY = y + addedYears - subYears;
+            let TM = m + addedMonths - subMonths;
+            let TD = d + addedDays - subDays;
+
+            // --- تطبيع (Normalization) القيم ---
+            // في الحسابات الإدارية، عادة ما نعتبر "جبر الكسور" للأيام والشهور بقاعدة 30 يوم للشهر
+            // لمعالجة الفائض والعجز الناتج عن الجمع والطرح
+
+            // أولاً: معالجة الأيام السالبة (الاستلاف)
+            while (TD < 0) {
+                TM--;
+                TD += 30; // استلاف شهر إداري (30 يوم)
+            }
+
+            // ثانياً: معالجة الشهور السالبة
+            while (TM < 0) {
+                TY--;
+                TM += 12;
+            }
+
+            // ثالثاً: معالجة فائض الأيام (أكثر من 29 يوم تعتبر شهر)
+            // ملاحظة: بعض الأنظمة تعتبر 30 يوم = شهر، والبعض يتركها أياماً حتى تصل 30.
+            // سنعتمد: كل 30 يوم تتحول لشهر
+            while (TD >= 30) {
+                TD -= 30;
+                TM++;
+            }
+
+            // رابعاً: معالجة فائض الشهور
+            while (TM >= 12) {
+                TM -= 12;
+                TY++;
+            }
+
+            totalBox.innerHTML = `صافي الخدمة (بعد الإضافات والخصم):<br>
+                              <span style="color:#007bff; font-size:1.4em">${TY}</span> سنة 
+                              و <span style="color:#007bff; font-size:1.4em">${TM}</span> شهر 
+                              و <span style="color:#007bff; font-size:1.4em">${TD}</span> يوم`;
+            totalBox.classList.add('show');
+        }
+    </script>
+
+</body>
+
+</html>
